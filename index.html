@@ -23,21 +23,42 @@
       /* — Background — */
       --cream:        #e8e2d2;   /* main page background */
       --cream-soft:   #f0ebdb;   /* slightly lighter; available for layered surfaces */
+      --card:         #ddd3ba;   /* hero card — slightly darker than cream, layered over network */
 
       /* — Text — */
-      --ink:          #20231e;   /* primary: name, headings, CV button border */
+      --ink:          #004225;   /* primary: name, headings, CV button border */
       --ink-body:     #2d3329;   /* body paragraphs */
       --ink-mute:     #6b6e5e;   /* meta info: dates, captions, eyebrow labels */
       --ink-hair:     rgba(32, 35, 30, 0.12);   /* hairline dividers between list items */
 
       /* — Accents (each color is used in exactly one place) — */
-      --pine:         #2a6b23;   /* small green tags in Research & Professional lists */
-      --ochre:        #b89456;   /* warm status labels in Writing ("Working paper" etc.) */
+      --pine:         #871626;   /* small green tags in Research & Professional lists */
+      --ochre:        #B18C35;   /* warm status labels in Writing ("Working paper" etc.) */
 
-      /* — Network (the animated transit map behind the hero) — */
-      --river:        #6ba3b8;   /* lighter / secondary lines */
-      --river-deep:   #3f7a8f;   /* darker / primary lines, station markers */
-      --pulse:        #2e8aa3;   /* flowing pulses traveling along the lines */
+      /* — Network (the animated transit map behind the hero) —
+         Four route "families". Each has a MAIN line color (the primary
+         line of that family uses this), a SOFT shade (the family's
+         secondary lines), and a PULSE color (slightly brighter, for the
+         flowing dots). Tweak any value to repaint the whole family. */
+      --line-red:           #871626;
+      --line-red-soft:      #b85067;
+      --line-red-pulse:     #d63a52;
+
+      --line-purple:        #4c0e69;
+      --line-purple-soft:   #7e3eaa;
+      --line-purple-pulse:  #7d2da8;
+
+      --line-blue:          #3f7a8f;
+      --line-blue-soft:     #6ba3b8;
+      --line-blue-pulse:    #2e8aa3;
+
+      --line-yellow:        #b18c35;
+      --line-yellow-soft:   #d4b87a;
+      --line-yellow-pulse:  #daad48;
+
+      /* Text accents that aren't part of the network itself
+         (link hover, eyebrow coords, tagline emphasis). */
+      --river-deep:         #3f7a8f;
 
       /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
          Typography & layout — usually no need to change
@@ -144,25 +165,16 @@
     .hero .network-wrap { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
     .hero .network-wrap svg { width: 100%; height: 100%; display: block; }
 
-    /* Strong cream fog over the left text column so headline + tagline read
-       cleanly even with a dense network behind. Two layers: a broad radial
-       and a horizontal left-edge gradient. */
+    /* The card itself provides text legibility now, so the strong vignette
+       is gone. We keep just a very soft cream fog at the far left edge so the
+       network doesn't run hard against the page margin. */
     .hero::before {
       content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-      background:
-        radial-gradient(
-          ellipse 65% 55% at 30% 48%,
-          rgba(232, 226, 210, 0.92) 0%,
-          rgba(232, 226, 210, 0.65) 35%,
-          rgba(232, 226, 210, 0.2) 65%,
-          rgba(232, 226, 210, 0) 85%
-        ),
-        linear-gradient(
-          to right,
-          rgba(232, 226, 210, 0.55) 0%,
-          rgba(232, 226, 210, 0.15) 30%,
-          rgba(232, 226, 210, 0) 55%
-        );
+      background: linear-gradient(
+        to right,
+        rgba(232, 226, 210, 0.35) 0%,
+        rgba(232, 226, 210, 0) 12%
+      );
     }
 
     .hero-content {
@@ -171,13 +183,27 @@
       max-width: var(--max-w);
       margin: 0 auto; width: 100%;
     }
+
+    /* The card laid over the network — slightly darker than the page so it
+       reads as a separate plane while keeping palette harmony. */
+    .hero-card {
+      display: inline-block;
+      background: var(--card);
+      border-radius: 6px;
+      padding: 3rem 3.5rem;
+      max-width: 640px;
+      box-shadow:
+        0 1px 0 rgba(32, 35, 30, 0.04),
+        0 24px 48px -28px rgba(32, 35, 30, 0.25);
+    }
+
     .hero h1 {
       font-family: var(--font-display);
       font-weight: 400;
       font-size: clamp(2.6rem, 7vw, 5.2rem);
       line-height: 1;
       letter-spacing: -0.015em;
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
       color: var(--ink);
     }
     .hero h1 .italic { font-style: italic; color: var(--ink); }
@@ -185,11 +211,12 @@
     .hero .tagline {
       font-family: var(--font-body);
       font-weight: 300;
-      font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+      font-size: clamp(1.05rem, 1.6vw, 1.2rem);
       line-height: 1.5;
       max-width: 38ch;
       color: var(--ink-body);
       opacity: 1;
+      margin: 0;
     }
     .hero .tagline .em {
       color: var(--river-deep);
@@ -199,23 +226,38 @@
     }
 
     .scroll-cue {
-      position: absolute; bottom: 2.5rem; left: 50%;
-      transform: translateX(-50%);
+      position: absolute !important; 
+      bottom: 2.5rem !important; 
+      top: auto !important; 
+      left: 50% !important; /* Centers the starting point */
+      transform: translateX(-50%) !important; /* Pulls it exactly into the middle */
       font-family: var(--font-mono);
       font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
       color: var(--ink-mute);
       z-index: 2;
       display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+    .scroll-cue:hover { color: var(--ink); }
+    .scroll-cue:focus-visible {
+      outline: 2px solid var(--river-deep);
+      outline-offset: 6px;
+      border-radius: 2px;
     }
     .scroll-cue::after {
       content: '';
       width: 1px; height: 32px;
       background: linear-gradient(to bottom, var(--ink-mute), transparent);
-      animation: scroll-pulse 2.5s ease-in-out infinite;
+      animation: scroll-bounce 1.8s ease-in-out infinite;
+      transform-origin: top;
     }
-    @keyframes scroll-pulse {
-      0%, 100% { opacity: 0.3; transform: scaleY(0.7); transform-origin: top; }
-      50% { opacity: 1; transform: scaleY(1); }
+    @keyframes scroll-bounce {
+      0%   { transform: translateY(-6px) scaleY(0.6); opacity: 0.25; }
+      50%  { transform: translateY(6px)  scaleY(1);   opacity: 1;    }
+      100% { transform: translateY(-6px) scaleY(0.6); opacity: 0.25; }
     }
 
     /* ---------- ABOUT ---------- */
@@ -291,16 +333,31 @@
     }
 
     /* ---------- WRITING (slight variation: serif titles, ochre status) ---------- */
+    /* Add this new class to handle the right-aligned tab text */
+    .tab-meta-right {
+      position: absolute;
+      top: 1.85rem; /* Aligns perfectly with the first item's heading */
+      right: 0;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--river-deep);
+      text-align: right;
+    }
+
+    /* ---------- WRITING (Updated: Sans-serif, normal style, thicker) ---------- */
     .writing-list .item .body h3 {
-      font-style: italic;
-      font-family: var(--font-display);
-      font-size: 1.3rem;
-      font-weight: 400;
+      font-style: normal; /* Removes the italic */
+      font-family: var(--font-body); /* Switches to your main font to allow for thickness */
+      font-weight: 500; /* Makes the text thicker */
+      font-size: 1.15rem; /* Adjusted slightly for the new font family */
       margin-bottom: 0.5rem;
-      line-height: 1.25;
-      max-width: 32ch;
+      line-height: 1.3;
+      max-width: 40ch;
       color: var(--ink);
     }
+
     .writing-list .item .body .status {
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -367,18 +424,138 @@
       margin: 0 auto;
     }
 
-    /* ---------- RESPONSIVE ---------- */
+    /* ---------- TABBED WORK SECTION ---------- */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--ink-hair);
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    .tab {
+      background: transparent;
+      border: none;
+      padding: 1rem 1.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.25s ease, border-color 0.25s ease;
+    }
+    .tab:first-child { padding-left: 0; }
+    .tab:hover { color: var(--ink); }
+    .tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+    .tab-panel { 
+      display: none; 
+      position: relative; /* Added so the absolute text positions relative to this box */
+    }
+    
+    .tab-panel.active {
+      display: block;
+      animation: tab-fade-in 0.35s ease both;
+    }
+    @keyframes tab-fade-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- IADB NESTED SUB-ROLES ---------- */
+    .sub-roles {
+      margin-top: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .sub-role {
+      padding-left: 1.4rem;
+      border-left: 1px solid var(--ink-hair);
+    }
+    .sub-role-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .sub-role h4 {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.98rem;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .sub-role .sub-date {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--pine);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .sub-role p {
+      margin: 0;
+      font-size: 0.92rem;
+      opacity: 0.8;
+      max-width: 56ch;
+    }
+
+    /* ---------- SECTION DIVIDERS ---------- */
+    .divider {
+      border: 0;
+      height: 1px;
+      background: rgba(32, 35, 30, 0.08);
+      max-width: 1000px;
+      margin: 0 auto;
+      width: calc(100% - 5rem);
+    }
+
+    /* ---------- SECTION CONTINUITY: faint background lines ---------- */
+    .section-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .section-bg svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    /* Push real content above the background lines */
+    section > *:not(.section-bg) { position: relative; z-index: 1; }
+
+        /* ---------- RESPONSIVE ---------- */
     @media (max-width: 720px) {
       nav.top { padding: 1rem 1.25rem; }
       nav.top ul { gap: 1rem; font-size: 0.7rem; }
       section { padding: 5rem 1.5rem; }
       .hero-content { padding: 0 1.5rem; }
+      .hero-card { padding: 2rem 1.75rem; }
       .eyebrow .coord { display: none; }
       .item { grid-template-columns: 1fr; gap: 0.5rem; }
       .item .tag { padding-top: 0; }
       .about-grid { grid-template-columns: 1fr; gap: 2rem; }
       .portrait { max-width: 260px; }
+      .tab { padding: 0.75rem 1rem; font-size: 0.72rem; }
+      .tab:first-child { padding-left: 0; }
+      .sub-role { padding-left: 1rem; }
+      .divider { width: calc(100% - 3rem); }
       footer { flex-direction: column; gap: 0.5rem; padding: 2rem 1.5rem; }
+      .tab-meta-right {
+        position: relative;
+        top: 0;
+        margin-bottom: 1rem;
+        text-align: left;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -396,9 +573,9 @@
     <a href="#top" class="brand">DAFG</a>
     <ul>
       <li><a href="#about">About</a></li>
+      <li><a href="#writing">Writing</a></li>
       <li><a href="#research">Research</a></li>
       <li><a href="#professional">Professional</a></li>
-      <li><a href="#writing">Writing</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
@@ -420,21 +597,40 @@
     </div>
 
     <div class="hero-content">
-      <h1>David <span class="italic">Figueroa</span></h1>
-      <p class="tagline">
-        Development economist. I study how <span class="em">rivers, roads, and grids</span> shape opportunity — currently focused on the Brazilian Amazon.
-      </p>
+      <div class="hero-card">
+        <h1>David <span class="italic">Figueroa</span></h1>
+        <p class="tagline">
+          Development economist. I study how <span class="em">networks</span> shape opportunity, currently focused on the Brazilian Amazon.
+        </p>
+      </div>
     </div>
 
-    <div class="scroll-cue">Scroll</div>
+    <a class="scroll-cue" href="#about" aria-label="Scroll to about section">Scroll</a>
   </section>
+
+  <hr class="divider" />
 
   <!-- ============ ABOUT ============ -->
   <section id="about">
-    <div class="eyebrow">
-      <span>About</span>
-      <span class="coord">48.83° N / 2.34° E</span>
+    <div class="section-bg" aria-hidden="true">
+      <svg viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="var(--ink-mute)" stroke-width="0.8" stroke-linejoin="round" opacity="0.12">
+          <path d="M -40 110 L 360 90 L 760 130 L 1640 100" />
+          <path d="M -40 540 L 480 560 L 980 510 L 1640 540" />
+          <path d="M 280 -40 L 320 240 L 280 460 L 340 740" />
+          <path d="M 680 -40 L 640 240 L 700 460 L 660 740" />
+          <path d="M 1200 -40 L 1250 200 L 1180 500 L 1220 740" />
+        </g>
+        <g fill="var(--ink-mute)" opacity="0.25">
+          <circle cx="360" cy="90" r="2" /><circle cx="760" cy="130" r="2" />
+          <circle cx="480" cy="560" r="2" /><circle cx="980" cy="510" r="2" />
+          <circle cx="320" cy="240" r="2" /><circle cx="280" cy="460" r="2" />
+          <circle cx="640" cy="240" r="2" /><circle cx="700" cy="460" r="2" />
+          <circle cx="1250" cy="200" r="2" /><circle cx="1180" cy="500" r="2" />
+        </g>
+      </svg>
     </div>
+    <div class="tab-meta-right">−3.47° S / 62.21° W</div>
     <div class="about-grid">
       <figure class="portrait">
         <img src="portrait.jpg" alt="Portrait of David Figueroa" />
@@ -442,148 +638,231 @@
       <div class="about-text">
         <h2>A researcher working at the seam of spatial data and development economics.</h2>
         <p class="lead">
-          I am finishing an MSc in Development Economics at Paris 1 Panthéon-Sorbonne and working remotely as a consultant in the Regional Integration Unit at the Inter-American Development Bank, where I build sub-municipal databases for the Amazon and study the spatial organization of international trade.
+          With an MSc. in Development Economics, I've done most of my work as a consultant with the Inter-American Development Bank. I've built remote sensing based sub-municipal databases for the Amazon, now working on the spatial (re)organization of international trade.
         </p>
         <p>
-          Before Paris, I read economics at Tec de Monterrey, where I specialised in data science for the public good and co-authored work on inequality, taxation, and the economic value of care. My current research combines remote sensing, machine learning, and applied econometrics to recover geographic detail in places where official data is thin.
+          Before Paris, I studied economics at Tec de Monterrey, where I specialised in data science for the public good and co-authored work on inequality, taxation, and the economic value of care. My current research combines remote sensing, machine learning, and applied econometrics to recover geographic detail in places where official data is thin.
         </p>
         <p>
-          I work in Spanish, English, French, and (slowly) Japanese.
+          I work in Spanish, English and French.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ============ RESEARCH ============ -->
-  <section id="research">
-    <div class="eyebrow">
-      <span>Research</span>
-      <span class="coord">−3.47° S / 62.21° W</span>
+  <hr class="divider" />
+
+  <!-- ============ WORK (TABS: WRITING / RESEARCH / PROFESSIONAL) ============ -->
+  <section id="work">
+    <div class="section-bg" aria-hidden="true">
+      <svg viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="var(--ink-mute)" stroke-width="0.8" stroke-linejoin="round" opacity="0.12">
+          <path d="M -40 220 L 380 200 L 740 260 L 1640 240" />
+          <path d="M -40 800 L 500 760 L 960 830 L 1640 800" />
+          <path d="M 1100 -40 L 1140 280 L 1080 580 L 1180 1240" />
+          <path d="M 420 1240 L 440 920 L 380 620 L 440 -40" />
+          <path d="M 150 -40 L 200 300 L 120 600 L 180 1240" />
+          <path d="M 800 -40 L 750 350 L 820 700 L 780 1240" />
+          <path d="M 1400 1240 L 1350 800 L 1420 400 L 1380 -40" />
+        </g>
+        <g fill="var(--ink-mute)" opacity="0.4">
+          <circle cx="380" cy="200" r="2.5" /><circle cx="740" cy="260" r="2.5" />
+          <circle cx="500" cy="760" r="2.5" /><circle cx="960" cy="830" r="2.5" />
+          <circle cx="1140" cy="280" r="2.5" /><circle cx="1080" cy="580" r="2.5" />
+          <circle cx="440" cy="920" r="2.5" /><circle cx="380" cy="620" r="2.5" />
+          <circle cx="200" cy="300" r="2.5" /><circle cx="120" cy="600" r="2.5" />
+          <circle cx="750" cy="350" r="2.5" /><circle cx="820" cy="700" r="2.5" />
+          <circle cx="1350" cy="800" r="2.5" /><circle cx="1420" cy="400" r="2.5" />
+        </g>
+      </svg>
     </div>
-    <h2>Interests</h2>
-    <div class="item-list">
+    
+    <div class="tab-bar" role="tablist">
+      <button class="tab active" data-tab="publications" role="tab">Publications</button>
+      <button class="tab" data-tab="professional" role="tab">Professional</button>
+      <button class="tab" data-tab="education" role="tab">Education</button>
+      <button class="tab" data-tab="research" role="tab">Interests</button>
+    </div>
 
-      <div class="item">
-        <div class="tag">Spatial</div>
-        <div class="body">
-          <h3>Spatial economics &amp; transport networks</h3>
-          <p>Building multimodal river-and-road networks for the Amazon to measure how connectivity mediates the effects of public policy.</p>
+    <div class="tab-panels">
+      
+      <div class="tab-panel active" data-panel="publications">
+        <div class="tab-meta-right">Papers &amp; working drafts</div>
+        <div class="item-list writing-list">
+
+          <div class="item">
+            <div class="tag">May 2025</div>
+            <div class="body">
+              <h3>Bridging Data Gaps in Amazonia: A Grid-Based GDP Estimation Using Remote Sensing and Machine Learning</h3>
+              <span class="status">Working paper</span>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">Apr 2024</div>
+            <div class="body">
+              <h3>La Evaluación de Impacto de Programas Sociales en México: Revisión de Literatura</h3>
+              <span class="status">Forthcoming</span>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">In progress</div>
+            <div class="body">
+              <h3>Going against the current: the spatially heterogeneous results of the Programa Mais Educacao</h3>
+              <span class="status">MSc thesis · 2026</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="item">
-        <div class="tag">Remote Sens.</div>
-        <div class="body">
-          <h3>Remote sensing &amp; machine learning</h3>
-          <p>Estimating economic activity at sub-municipal resolution from satellite-derived features when administrative data runs out.</p>
+      <div class="tab-panel" data-panel="professional">
+        <div class="tab-meta-right">Experience &amp; affiliations</div>
+        <div class="item-list">
+
+          <div class="item">
+            <div class="tag">2024 — 2026</div>
+            <div class="body">
+              <h3>Consultant</h3>
+              <div class="role-meta">Inter-American Development Bank · Paris (remote)</div>
+              <div class="sub-roles">
+                <div class="sub-role">
+                  <div class="sub-role-header">
+                    <h4>Regional Integration Unit (RIU)</h4>
+                    <span class="sub-date">2024 — 2026</span>
+                  </div>
+                  <p>Built sub-municipal databases for the Amazon region using georeferenced data in QGIS and machine-learning pipelines in R, recovering economic activity at finer resolution than the official statistics allow. One stream of this work is now a forthcoming working paper.</p>
+                </div>
+                <div class="sub-role">
+                  <div class="sub-role-header">
+                    <h4>Productivity, Trade and Innovation (PTI)</h4>
+                    <span class="sub-date">2025 — 2026</span>
+                  </div>
+                  <p>Analyse the spatial organisation of international trade using HS6-level customs data from CEPII to understand how the baricenter of world trade has shifted over the past two decades.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">2023 — 2024</div>
+            <div class="body">
+              <h3>Data Manager &amp; Developer</h3>
+              <div class="role-meta">Voxmapp · Paris</div>
+              <p>Designed and queried PostgreSQL / PL/pgSQL databases for development-programme partners across governments and NGOs. Built dashboards in Apache Superset and ran Python scrapers and NLP pipelines on open-access data.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">2023</div>
+            <div class="body">
+              <h3>Programmer &amp; Research Assistant, Care Economics</h3>
+              <div class="role-meta">Tec de Monterrey · Monterrey, Mexico</div>
+              <p>Wrote the Shiny application that visualised the award-winning research on the economic value of care in Mexico. Supported literature review in R and STATA alongside ITESM faculty.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">2021 — 2022</div>
+            <div class="body">
+              <h3>Co-Investigator &amp; Co-Author</h3>
+              <div class="role-meta">Centro de Investigación Económica y Presupuestaria (CIEP) · Mexico</div>
+              <p>Co-wrote <em>La desigualdad y los impuestos</em>, an article on the distributional effects of taxation on inequality in Mexico.</p>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="item">
-        <div class="tag">Trade</div>
-        <div class="body">
-          <h3>International trade &amp; geography</h3>
-          <p>Tracking how the spatial baricenter of world trade has shifted using HS6-level customs data.</p>
+      <div class="tab-panel" data-panel="education">
+        <div class="tab-meta-right">Degrees &amp; academics</div>
+        <div class="item-list">
+
+          <div class="item">
+            <div class="tag">2024 — 2026</div>
+            <div class="body">
+              <h3>MSc. in Development Economics</h3>
+              <div class="role-meta">Paris 1 Panthéon-Sorbonne · Paris, France</div>
+              <p>Focused on Development Economics, Applied Econometrics, Rural and Urban development, Remote Sensing, and Big data analysis.</p>
+              <p><strong>M2 Thesis:</strong> Elaborated a multimodal transportation network for land and rivers in the Amazon to measure spatial heterogeneous effects of an education public program in Brazil.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">2020 — 2024</div>
+            <div class="body">
+              <h3>Bachelor of Economics</h3>
+              <div class="role-meta">Tecnológico de Monterrey · Monterrey, Mexico</div>
+              <p>Final grade: 95.1. Specialized in Data Science for the public good where I modeled a calculator of the cost of care in Mexico using Python, R, and Netlogo.</p>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="item">
-        <div class="tag">Inequality</div>
-        <div class="body">
-          <h3>Inequality, taxation &amp; care</h3>
-          <p>Earlier work on the distributional effects of taxes and the economic value of unpaid care in Mexico.</p>
+      <div class="tab-panel" data-panel="research">
+        <div class="tab-meta-right">−3.47° S / 62.21° W</div>
+        <div class="item-list">
+
+          <div class="item">
+            <div class="tag">Spatial</div>
+            <div class="body">
+              <h3>Spatial economics &amp; transport networks</h3>
+              <p>Building multimodal river-and-road networks for the Amazon to measure how connectivity mediates the effects of public policy.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">Remote Sens.</div>
+            <div class="body">
+              <h3>Remote sensing &amp; machine learning</h3>
+              <p>Estimating economic activity at sub-municipal resolution from satellite-derived features when administrative data runs out.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">Trade</div>
+            <div class="body">
+              <h3>International trade &amp; geography</h3>
+              <p>Tracking how the spatial baricenter of world trade has shifted using HS6-level customs data.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="tag">Inequality</div>
+            <div class="body">
+              <h3>Inequality, taxation &amp; care</h3>
+              <p>Earlier work on the distributional effects of taxes and the economic value of unpaid care in Mexico.</p>
+            </div>
+          </div>
+
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- ============ PROFESSIONAL ============ -->
-  <section id="professional">
-    <div class="eyebrow">
-      <span>Professional</span>
-      <span class="coord">Experience &amp; affiliations</span>
-    </div>
-    <h2>Where I&rsquo;ve worked.</h2>
-    <div class="item-list">
-
-      <div class="item">
-        <div class="tag">2024 — 2026</div>
-        <div class="body">
-          <h3>Consultant, Regional Integration Unit</h3>
-          <div class="role-meta">Inter-American Development Bank · Paris (remote)</div>
-          <p>Build sub-municipal databases for the Amazon region using georeferenced data in QGIS and machine-learning pipelines in R. Analyse the spatial organisation of international trade using HS6 customs data from CEPII. One stream of work is now a forthcoming working paper.</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="tag">2023 — 2024</div>
-        <div class="body">
-          <h3>Data Manager &amp; Developer</h3>
-          <div class="role-meta">Voxmapp · Paris</div>
-          <p>Designed and queried PostgreSQL / PL/pgSQL databases for development-programme partners across governments and NGOs. Built dashboards in Apache Superset and ran Python scrapers and NLP pipelines on open-access data.</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="tag">2023</div>
-        <div class="body">
-          <h3>Programmer &amp; Research Assistant, Care Economics</h3>
-          <div class="role-meta">Tec de Monterrey · Monterrey, Mexico</div>
-          <p>Wrote the Shiny application that visualised the award-winning research on the economic value of care in Mexico. Supported literature review in R and STATA alongside ITESM faculty.</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="tag">2021 — 2022</div>
-        <div class="body">
-          <h3>Co-Investigator &amp; Co-Author</h3>
-          <div class="role-meta">Centro de Investigación Económica y Presupuestaria (CIEP) · Mexico</div>
-          <p>Co-wrote <em>La desigualdad y los impuestos</em>, an article on the distributional effects of taxation on inequality in Mexico.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============ WRITING ============ -->
-  <section id="writing">
-    <div class="eyebrow">
-      <span>Writing</span>
-      <span class="coord">Papers &amp; working drafts</span>
-    </div>
-    <h2>Selected work</h2>
-    <div class="item-list writing-list">
-
-      <div class="item">
-        <div class="tag">May 2025</div>
-        <div class="body">
-          <h3>Bridging Data Gaps in Amazonia: A Grid-Based GDP Estimation Using Remote Sensing and Machine Learning</h3>
-          <span class="status">Working paper</span>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="tag">Apr 2024</div>
-        <div class="body">
-          <h3>La Evaluación de Impacto de Programas Sociales en México: Revisión de Literatura</h3>
-          <span class="status">Forthcoming</span>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="tag">In progress</div>
-        <div class="body">
-          <h3>Multimodal transportation and the spatial heterogeneity of education programs in the Brazilian Amazon</h3>
-          <span class="status">MSc thesis · 2026</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
+  <hr class="divider" />
 
   <!-- ============ CONTACT ============ -->
   <section id="contact" class="contact">
+    <div class="section-bg" aria-hidden="true">
+      <svg viewBox="0 0 1600 500" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="var(--ink-mute)" stroke-width="0.8" stroke-linejoin="round" opacity="0.12">
+          <path d="M -40 120 L 460 100 L 920 160 L 1640 130" />
+          <path d="M 900 -40 L 940 180 L 880 360 L 940 540" />
+          <path d="M 300 -40 L 350 200 L 280 350 L 320 540" />
+          <path d="M 1300 -40 L 1250 150 L 1320 350 L 1280 540" />
+        </g>
+        <g fill="var(--ink-mute)" opacity="0.25">
+          <circle cx="460" cy="100" r="2" /><circle cx="920" cy="160" r="2" />
+          <circle cx="940" cy="180" r="2" /><circle cx="880" cy="360" r="2" />
+          <circle cx="350" cy="200" r="2" /><circle cx="280" cy="350" r="2" />
+          <circle cx="1250" cy="150" r="2" /><circle cx="1320" cy="350" r="2" />
+        </g>
+      </svg>
+    </div>
     <div class="eyebrow">
       <span>Contact</span>
       <span class="coord">Paris 14e</span>
@@ -628,7 +907,7 @@
         const p = document.createElementNS(NS, 'path');
         p.setAttribute('d', d);
         p.setAttribute('fill', 'none');
-        p.setAttribute('stroke', opts.stroke || 'var(--river)');
+        p.setAttribute('stroke', opts.stroke || 'var(--river-deep)');
         p.setAttribute('stroke-width', opts.width || 1.5);
         p.setAttribute('stroke-linecap', 'round');
         p.setAttribute('stroke-linejoin', 'round');
@@ -731,17 +1010,15 @@
       }
 
       // ===== Build the line layer =====
-      // Layers (in z-order): grid -> lines -> stations -> interchanges -> pulses
+      // Layers (in z-order): grid -> lines -> stations -> pulses
       const gridGroup = document.createElementNS(NS, 'g');
       const linesGroup = document.createElementNS(NS, 'g');
       const stationsGroup = document.createElementNS(NS, 'g');
-      const interchangesGroup = document.createElementNS(NS, 'g');
       const pulseGroup = document.createElementNS(NS, 'g');
 
       svg.appendChild(gridGroup);
       svg.appendChild(linesGroup);
       svg.appendChild(stationsGroup);
-      svg.appendChild(interchangesGroup);
       svg.appendChild(pulseGroup);
 
       // Faint dot grid (remote-sensing flavor)
@@ -758,101 +1035,159 @@
         }
       }
 
-      // Generate the lines (the "routes" of the transit network)
-      const NUM_LINES = 11;
-      const lines = []; // for pulse system: { el, weight, length }
+      // Four color families: red, purple, blue, yellow.
+      // Each has a "main" primary line and several "soft" secondary lines.
+      const lineColors = [
+        { main: 'var(--line-red)',    soft: 'var(--line-red-soft)',    pulse: 'var(--line-red-pulse)' },
+        { main: 'var(--line-purple)', soft: 'var(--line-purple-soft)', pulse: 'var(--line-purple-pulse)' },
+        { main: 'var(--line-blue)',   soft: 'var(--line-blue-soft)',   pulse: 'var(--line-blue-pulse)' },
+        { main: 'var(--line-yellow)', soft: 'var(--line-yellow-soft)', pulse: 'var(--line-yellow-pulse)' },
+      ];
+
+      const NUM_LINES = 12;
+      const lines = [];
+      const lineTiers = [];
+
       for (let i = 0; i < NUM_LINES; i++) {
         const points = generateLineWaypoints();
         const d = waypointsToPathD(points);
 
-        // Three tiers: primary (darker, thicker), mid, faint
-        const tier = i < 3 ? 0 : (i < 7 ? 1 : 2);
-        const stroke = tier === 0 ? 'var(--river-deep)' : 'var(--river)';
-        const width = [1.9, 1.4, 1.1][tier] + rand() * 0.3;
-        const opacity = [0.45, 0.32, 0.22][tier];
-        const weight = [3, 2, 1][tier]; // pulse-frequency weighting
+        // First four are "primaries" — one per family.
+        // Remaining lines cycle through families using the lighter "soft" shade.
+        const colorIdx = i % 4;
+        const family = lineColors[colorIdx];
+        const isPrimary = i < 4;
+
+        const stroke = isPrimary ? family.main : family.soft;
+        const width = isPrimary ? 2.0 + rand() * 0.3 : 1.3 + rand() * 0.3;
+        const opacity = isPrimary ? 0.7 : 0.45;
+        const weight = isPrimary ? 3 : 1;
 
         const path = makePath(d, { stroke, width, opacity });
         linesGroup.appendChild(path);
-        lines.push({ el: path, weight });
+        lines.push({
+          el: path,
+          weight,
+          mainColor: stroke,
+          pulseColor: family.pulse,
+        });
+        lineTiers.push(isPrimary ? 0 : 1);
+      }
+
+      // Deterministic line 1 — far left edge, blue family (calm anchor).
+      {
+        const pts = [
+          { x: 55, y: -20 },
+          { x: 105, y: 170 },
+          { x: 70, y: 360 },
+          { x: 130, y: 580 },
+          { x: 80, y: H + 20 }
+        ];
+        const path = makePath(waypointsToPathD(pts), {
+          stroke: 'var(--line-blue)',
+          width: 1.9,
+          opacity: 0.6,
+        });
+        linesGroup.appendChild(path);
+        lines.push({ el: path, weight: 2, mainColor: 'var(--line-blue)', pulseColor: 'var(--line-blue-pulse)' });
+        lineTiers.push(0);
+      }
+
+      // Deterministic line 2 — a curvy "/" diagonal sweeping from
+      // the bottom-left up to the top-right. Built as a chain of
+      // quadratic Beziers (Q + T) so the curve flows continuously
+      // with gentle S-shaped undulations. Passes behind the hero card
+      // mid-page. Purple family.
+      {
+        const d = `M -20 ${H + 20} ` +
+                  `Q 80 840, 220 730 ` +
+                  `T 400 570 ` +
+                  `T 580 410 ` +
+                  `T 760 260 ` +
+                  `T 940 130 ` +
+                  `T 1140 -20`;
+        const path = makePath(d, {
+          stroke: 'var(--line-purple)',
+          width: 2.0,
+          opacity: 0.65,
+        });
+        linesGroup.appendChild(path);
+        lines.push({ el: path, weight: 3, mainColor: 'var(--line-purple)', pulseColor: 'var(--line-purple-pulse)' });
+        lineTiers.push(0);
+      }
+
+      // Deterministic line 3 — Faint line passing behind the hero card
+      {
+        const pts = [
+          { x: 300, y: -20 },
+          { x: 350, y: 220 },
+          { x: 280, y: 450 },
+          { x: 380, y: 700 },
+          { x: 320, y: H + 20 }
+        ];
+        const path = makePath(waypointsToPathD(pts), {
+          stroke: 'var(--line-red-soft)',
+          width: 1.2,
+          opacity: 0.35,
+        });
+        linesGroup.appendChild(path);
+        lines.push({ el: path, weight: 1, mainColor: 'var(--line-red-soft)', pulseColor: 'var(--line-red-pulse)' });
+        lineTiers.push(1);
+      }
+
+      // Deterministic line 4 — Another faint vertical wave near the card
+      {
+        const pts = [
+          { x: 480, y: -20 },
+          { x: 420, y: 280 },
+          { x: 520, y: 550 },
+          { x: 460, y: 800 },
+          { x: 500, y: H + 20 }
+        ];
+        const path = makePath(waypointsToPathD(pts), {
+          stroke: 'var(--line-yellow-soft)',
+          width: 1.2,
+          opacity: 0.35,
+        });
+        linesGroup.appendChild(path);
+        lines.push({ el: path, weight: 1, mainColor: 'var(--line-yellow-soft)', pulseColor: 'var(--line-yellow-pulse)' });
+        lineTiers.push(1);
+      }
+
+      // Deterministic line 5 — Horizontal sweep pushed into the bottom third
+      {
+        const pts = [
+          { x: -20, y: 750 },
+          { x: 400, y: 720 },
+          { x: 800, y: 800 },
+          { x: 1200, y: 680 },
+          { x: 1620, y: 750 }
+        ];
+        const path = makePath(waypointsToPathD(pts), {
+          stroke: 'var(--line-blue-soft)',
+          width: 1.4,
+          opacity: 0.45,
+        });
+        linesGroup.appendChild(path);
+        lines.push({ el: path, weight: 2, mainColor: 'var(--line-blue-soft)', pulseColor: 'var(--line-blue-pulse)' });
+        lineTiers.push(1);
       }
 
       // ===== Stations: small filled squares spaced along each line =====
+      // Each station inherits its color from the line it sits on.
       lines.forEach((line) => {
         const totalLength = line.el.getTotalLength();
         const interval = 110 + rand() * 50;
-        // Skip the first/last small portion so stations aren't right at the edge
         for (let dist = interval; dist < totalLength - interval; dist += interval) {
           const pt = line.el.getPointAtLength(dist);
           const station = makeRect(pt.x, pt.y, 3.5, {
-            fill: 'var(--river-deep)',
-            opacity: 0.55,
+            fill: line.mainColor,
+            opacity: 0.7,
           });
           stationsGroup.appendChild(station);
         }
       });
 
-      // ===== Interchanges: detected via spatial hashing =====
-      // Sample each line densely, drop into 50×50 cells, count distinct lines per cell.
-      const cellSize = 55;
-      const cells = new Map();
-      lines.forEach((line, lineIdx) => {
-        const totalLength = line.el.getTotalLength();
-        const step = 16;
-        for (let dist = 0; dist <= totalLength; dist += step) {
-          const pt = line.el.getPointAtLength(dist);
-          const cx = Math.floor(pt.x / cellSize);
-          const cy = Math.floor(pt.y / cellSize);
-          const key = `${cx},${cy}`;
-          if (!cells.has(key)) cells.set(key, new Map());
-          const linesInCell = cells.get(key);
-          if (!linesInCell.has(lineIdx)) {
-            linesInCell.set(lineIdx, { sumX: pt.x, sumY: pt.y, n: 1 });
-          } else {
-            const e = linesInCell.get(lineIdx);
-            e.sumX += pt.x; e.sumY += pt.y; e.n++;
-          }
-        }
-      });
-
-      // Candidate interchanges = cells with ≥2 distinct lines
-      const candidates = [];
-      cells.forEach((linesInCell) => {
-        if (linesInCell.size >= 2) {
-          let sumX = 0, sumY = 0, n = 0;
-          linesInCell.forEach((e) => {
-            sumX += e.sumX / e.n;
-            sumY += e.sumY / e.n;
-            n++;
-          });
-          candidates.push({ x: sumX / n, y: sumY / n, count: linesInCell.size });
-        }
-      });
-
-      // Deduplicate interchanges that are too close to each other (keep the busiest)
-      candidates.sort((a, b) => b.count - a.count);
-      const interchanges = [];
-      candidates.forEach((c) => {
-        const tooClose = interchanges.some(
-          (i) => Math.hypot(i.x - c.x, i.y - c.y) < 50
-        );
-        // Also skip interchanges very near the left edge where the text sits
-        if (!tooClose && c.x > 80 && c.x < W - 30 && c.y > 30 && c.y < H - 30) {
-          interchanges.push(c);
-        }
-      });
-
-      // Draw the interchange rings (open circles — the visual "anchors")
-      interchanges.forEach((ic) => {
-        const radius = ic.count >= 3 ? 6.5 : 5;
-        const ring = makeCircle(ic.x, ic.y, radius, {
-          fill: 'var(--cream)',
-          stroke: 'var(--ink)',
-          strokeWidth: 1.4,
-          opacity: 0.85,
-        });
-        interchangesGroup.appendChild(ring);
-      });
 
       // ===== Pulses (flowing dots along the lines) =====
       // Pre-compute path lengths
@@ -872,12 +1207,12 @@
         return lines[lines.length - 1];
       }
 
-      const NUM_PULSES = 26;
+      const NUM_PULSES = 40;
       const pulses = [];
       for (let i = 0; i < NUM_PULSES; i++) {
         const dot = document.createElementNS(NS, 'circle');
         dot.setAttribute('r', 2.4);
-        dot.setAttribute('fill', 'var(--pulse)');
+        // Fill is set on each assignment to match its line's family color
         dot.setAttribute('opacity', '0');
         pulseGroup.appendChild(dot);
         pulses.push({
@@ -885,7 +1220,7 @@
           path: null,
           duration: 0,
           startTime: 0,
-          delay: rand() * 5000,
+          delay: rand() * 3000,
         });
       }
 
@@ -897,6 +1232,7 @@
           return;
         }
         pulse.path = p;
+        pulse.el.setAttribute('fill', p.pulseColor); // color matches the line's family
         pulse.duration = 2200 + (p.length / 80) * 900 + rand() * 1500;
         pulse.startTime = now;
       }
@@ -914,7 +1250,7 @@
             if (t >= 1) {
               pulse.el.setAttribute('opacity', '0');
               pulse.path = null;
-              pulse.delay = 150 + rand() * 1800;
+              pulse.delay = 1200 + rand() * 6000; // Much longer, highly randomized respawn
               pulse.startTime = now;
               continue;
             }
@@ -937,6 +1273,17 @@
 
       // Year in footer
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      // ===== Tab switching =====
+      const tabs = document.querySelectorAll('.tab');
+      const panels = document.querySelectorAll('.tab-panel');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.getAttribute('data-tab');
+          tabs.forEach((t) => t.classList.toggle('active', t === tab));
+          panels.forEach((p) => p.classList.toggle('active', p.getAttribute('data-panel') === target));
+        });
+      });
     })();
   </script>
 </body>
