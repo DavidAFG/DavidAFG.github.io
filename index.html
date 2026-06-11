@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>David Figueroa</title>
+  <meta name="description" content="Development economist working on spatial methods, remote sensing, and the Amazon basin." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       🎨  COLOR PALETTE  —  tweak any value here to change the whole site.
+       Every color used elsewhere references one of these variables.
+       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    :root {
+
+      /* — Background — */
+      --cream:        #e8e2d2;   /* main page background */
+      --cream-soft:   #f0ebdb;   /* slightly lighter; available for layered surfaces */
+
+      /* — Text — */
+      --ink:          #20231e;   /* primary: name, headings, CV button border */
+      --ink-body:     #2d3329;   /* body paragraphs */
+      --ink-mute:     #6b6e5e;   /* meta info: dates, captions, eyebrow labels */
+      --ink-hair:     rgba(32, 35, 30, 0.12);   /* hairline dividers between list items */
+
+      /* — Accents (each color is used in exactly one place) — */
+      --pine:         #2a6b23;   /* small green tags in Research & Professional lists */
+      --ochre:        #b89456;   /* warm status labels in Writing ("Working paper" etc.) */
+
+      /* — Network (the animated transit map behind the hero) — */
+      --river:        #6ba3b8;   /* lighter / secondary lines */
+      --river-deep:   #3f7a8f;   /* darker / primary lines, station markers */
+      --pulse:        #2e8aa3;   /* flowing pulses traveling along the lines */
+
+      /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         Typography & layout — usually no need to change
+         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+      --font-display: 'Instrument Serif', 'Times New Roman', serif;
+      --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+      --max-w: 1200px;
+      --col-w: 640px;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       Below this line: layout & component styles.
+       You usually won't need to edit anything here for color tweaks.
+       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink-body);
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--ink-hair);
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    a:hover { color: var(--river-deep); border-bottom-color: var(--river-deep); }
+    a:focus-visible { outline: 2px solid var(--river-deep); outline-offset: 3px; border-radius: 1px; }
+
+    /* ---------- NAV ---------- */
+    nav.top {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.5rem 2.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: linear-gradient(to bottom, rgba(232, 226, 210, 0.92), rgba(232, 226, 210, 0));
+      backdrop-filter: blur(2px);
+    }
+    nav.top .brand { color: var(--ink); border: none; font-weight: 500; letter-spacing: 0.08em; }
+    nav.top ul { list-style: none; display: flex; gap: 1.75rem; }
+    nav.top ul a { border: none; color: var(--ink); opacity: 0.7; }
+    nav.top ul a:hover { opacity: 1; color: var(--river-deep); }
+
+    /* ---------- SECTION SCAFFOLD ---------- */
+    section { position: relative; padding: 7rem 2.5rem; max-width: var(--max-w); margin: 0 auto; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .eyebrow::before { content: ''; width: 36px; height: 1px; background: var(--ink-hair); }
+    .eyebrow .coord { color: var(--river-deep); margin-left: auto; }
+
+    h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 2.5rem;
+      max-width: 18ch;
+      color: var(--ink);
+    }
+    h3 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+      color: var(--ink);
+    }
+    p { max-width: var(--col-w); color: var(--ink-body); opacity: 0.92; }
+    p + p { margin-top: 1.1rem; }
+    .lead { font-size: 1.15rem; opacity: 1; color: var(--ink); }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      min-height: 100vh; max-width: none; padding: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .hero .network-wrap { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .hero .network-wrap svg { width: 100%; height: 100%; display: block; }
+
+    /* Strong cream fog over the left text column so headline + tagline read
+       cleanly even with a dense network behind. Two layers: a broad radial
+       and a horizontal left-edge gradient. */
+    .hero::before {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(
+          ellipse 65% 55% at 30% 48%,
+          rgba(232, 226, 210, 0.92) 0%,
+          rgba(232, 226, 210, 0.65) 35%,
+          rgba(232, 226, 210, 0.2) 65%,
+          rgba(232, 226, 210, 0) 85%
+        ),
+        linear-gradient(
+          to right,
+          rgba(232, 226, 210, 0.55) 0%,
+          rgba(232, 226, 210, 0.15) 30%,
+          rgba(232, 226, 210, 0) 55%
+        );
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 2.5rem;
+      max-width: var(--max-w);
+      margin: 0 auto; width: 100%;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1;
+      letter-spacing: -0.015em;
+      margin-bottom: 2rem;
+      color: var(--ink);
+    }
+    .hero h1 .italic { font-style: italic; color: var(--ink); }
+
+    .hero .tagline {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+      line-height: 1.5;
+      max-width: 38ch;
+      color: var(--ink-body);
+      opacity: 1;
+    }
+    .hero .tagline .em {
+      color: var(--river-deep);
+      font-style: italic;
+      font-family: var(--font-display);
+      font-size: 1.15em;
+    }
+
+    .scroll-cue {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-mute);
+      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    }
+    .scroll-cue::after {
+      content: '';
+      width: 1px; height: 32px;
+      background: linear-gradient(to bottom, var(--ink-mute), transparent);
+      animation: scroll-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.7); transform-origin: top; }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* ---------- ABOUT ---------- */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 3.5rem;
+      align-items: start;
+      max-width: 1000px;
+    }
+    .portrait { margin: 0; position: relative; }
+    .portrait img {
+      display: block; width: 100%; height: auto;
+      filter: saturate(0.92) contrast(1.02);
+      box-shadow:
+        0 1px 0 rgba(32, 35, 30, 0.04),
+        0 12px 28px -16px rgba(32, 35, 30, 0.35);
+    }
+    .portrait::after {
+      content: 'Paris · 2026';
+      display: block;
+      margin-top: 0.9rem;
+      padding-top: 0.7rem;
+      border-top: 1px solid var(--ink-hair);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .about-text { max-width: var(--col-w); }
+    .about-text h2 { margin-bottom: 2rem; }
+
+    /* ---------- LISTS (research, professional, writing share style) ---------- */
+    .item-list { max-width: 820px; border-top: 1px solid var(--ink-hair); }
+    .item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 2rem;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--ink-hair);
+      align-items: baseline;
+    }
+    .item .tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pine);
+      padding-top: 0.4rem;
+    }
+    .item .body h3 {
+      font-style: normal;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+    }
+    .item .body .role-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: var(--ink-mute);
+      margin-bottom: 0.6rem;
+      text-transform: none;
+    }
+    .item .body p {
+      font-size: 0.95rem;
+      opacity: 0.82;
+      margin: 0;
+      max-width: 56ch;
+    }
+
+    /* ---------- WRITING (slight variation: serif titles, ochre status) ---------- */
+    .writing-list .item .body h3 {
+      font-style: italic;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+      max-width: 32ch;
+      color: var(--ink);
+    }
+    .writing-list .item .body .status {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ochre);
+    }
+
+    /* ---------- CONTACT ---------- */
+    .contact { padding-bottom: 7rem; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2.5rem 4rem;
+      max-width: 820px;
+    }
+    .contact-grid .label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 0.6rem;
+    }
+    .contact-grid .value {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .cv-button {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.85rem 1.6rem;
+      border: 1px solid var(--ink);
+      border-radius: 0;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: transparent;
+      transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+    .cv-button:hover {
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      border-top: 1px solid var(--ink-hair);
+      padding: 2rem 2.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ink-mute);
+      letter-spacing: 0.06em;
+      display: flex;
+      justify-content: space-between;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 720px) {
+      nav.top { padding: 1rem 1.25rem; }
+      nav.top ul { gap: 1rem; font-size: 0.7rem; }
+      section { padding: 5rem 1.5rem; }
+      .hero-content { padding: 0 1.5rem; }
+      .eyebrow .coord { display: none; }
+      .item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .item .tag { padding-top: 0; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .portrait { max-width: 260px; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 2rem 1.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top">
+    <a href="#top" class="brand">DAFG</a>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#professional">Professional</a></li>
+      <li><a href="#writing">Writing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" class="hero">
+    <div class="network-wrap" aria-hidden="true">
+      <svg id="network" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <filter id="pulse-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="hero-content">
+      <h1>David <span class="italic">Figueroa</span></h1>
+      <p class="tagline">
+        Development economist. I study how <span class="em">rivers, roads, and grids</span> shape opportunity — currently focused on the Brazilian Amazon.
+      </p>
+    </div>
+
+    <div class="scroll-cue">Scroll</div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about">
+    <div class="eyebrow">
+      <span>About</span>
+      <span class="coord">48.83° N / 2.34° E</span>
+    </div>
+    <div class="about-grid">
+      <figure class="portrait">
+        <img src="portrait.jpg" alt="Portrait of David Figueroa" />
+      </figure>
+      <div class="about-text">
+        <h2>A researcher working at the seam of spatial data and development economics.</h2>
+        <p class="lead">
+          I am finishing an MSc in Development Economics at Paris 1 Panthéon-Sorbonne and working remotely as a consultant in the Regional Integration Unit at the Inter-American Development Bank, where I build sub-municipal databases for the Amazon and study the spatial organization of international trade.
+        </p>
+        <p>
+          Before Paris, I read economics at Tec de Monterrey, where I specialised in data science for the public good and co-authored work on inequality, taxation, and the economic value of care. My current research combines remote sensing, machine learning, and applied econometrics to recover geographic detail in places where official data is thin.
+        </p>
+        <p>
+          I work in Spanish, English, French, and (slowly) Japanese.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESEARCH ============ -->
+  <section id="research">
+    <div class="eyebrow">
+      <span>Research</span>
+      <span class="coord">−3.47° S / 62.21° W</span>
+    </div>
+    <h2>Interests</h2>
+    <div class="item-list">
+
+      <div class="item">
+        <div class="tag">Spatial</div>
+        <div class="body">
+          <h3>Spatial economics &amp; transport networks</h3>
+          <p>Building multimodal river-and-road networks for the Amazon to measure how connectivity mediates the effects of public policy.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">Remote Sens.</div>
+        <div class="body">
+          <h3>Remote sensing &amp; machine learning</h3>
+          <p>Estimating economic activity at sub-municipal resolution from satellite-derived features when administrative data runs out.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">Trade</div>
+        <div class="body">
+          <h3>International trade &amp; geography</h3>
+          <p>Tracking how the spatial baricenter of world trade has shifted using HS6-level customs data.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">Inequality</div>
+        <div class="body">
+          <h3>Inequality, taxation &amp; care</h3>
+          <p>Earlier work on the distributional effects of taxes and the economic value of unpaid care in Mexico.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ PROFESSIONAL ============ -->
+  <section id="professional">
+    <div class="eyebrow">
+      <span>Professional</span>
+      <span class="coord">Experience &amp; affiliations</span>
+    </div>
+    <h2>Where I&rsquo;ve worked.</h2>
+    <div class="item-list">
+
+      <div class="item">
+        <div class="tag">2024 — 2026</div>
+        <div class="body">
+          <h3>Consultant, Regional Integration Unit</h3>
+          <div class="role-meta">Inter-American Development Bank · Paris (remote)</div>
+          <p>Build sub-municipal databases for the Amazon region using georeferenced data in QGIS and machine-learning pipelines in R. Analyse the spatial organisation of international trade using HS6 customs data from CEPII. One stream of work is now a forthcoming working paper.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">2023 — 2024</div>
+        <div class="body">
+          <h3>Data Manager &amp; Developer</h3>
+          <div class="role-meta">Voxmapp · Paris</div>
+          <p>Designed and queried PostgreSQL / PL/pgSQL databases for development-programme partners across governments and NGOs. Built dashboards in Apache Superset and ran Python scrapers and NLP pipelines on open-access data.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">2023</div>
+        <div class="body">
+          <h3>Programmer &amp; Research Assistant, Care Economics</h3>
+          <div class="role-meta">Tec de Monterrey · Monterrey, Mexico</div>
+          <p>Wrote the Shiny application that visualised the award-winning research on the economic value of care in Mexico. Supported literature review in R and STATA alongside ITESM faculty.</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">2021 — 2022</div>
+        <div class="body">
+          <h3>Co-Investigator &amp; Co-Author</h3>
+          <div class="role-meta">Centro de Investigación Económica y Presupuestaria (CIEP) · Mexico</div>
+          <p>Co-wrote <em>La desigualdad y los impuestos</em>, an article on the distributional effects of taxation on inequality in Mexico.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ WRITING ============ -->
+  <section id="writing">
+    <div class="eyebrow">
+      <span>Writing</span>
+      <span class="coord">Papers &amp; working drafts</span>
+    </div>
+    <h2>Selected work</h2>
+    <div class="item-list writing-list">
+
+      <div class="item">
+        <div class="tag">May 2025</div>
+        <div class="body">
+          <h3>Bridging Data Gaps in Amazonia: A Grid-Based GDP Estimation Using Remote Sensing and Machine Learning</h3>
+          <span class="status">Working paper</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">Apr 2024</div>
+        <div class="body">
+          <h3>La Evaluación de Impacto de Programas Sociales en México: Revisión de Literatura</h3>
+          <span class="status">Forthcoming</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tag">In progress</div>
+        <div class="body">
+          <h3>Multimodal transportation and the spatial heterogeneity of education programs in the Brazilian Amazon</h3>
+          <span class="status">MSc thesis · 2026</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="contact">
+    <div class="eyebrow">
+      <span>Contact</span>
+      <span class="coord">Paris 14e</span>
+    </div>
+    <h2>Get in touch.</h2>
+    <div class="contact-grid">
+      <div>
+        <div class="label">Email</div>
+        <div class="value"><a href="mailto:davidalfigueroag@gmail.com">davidalfigueroag@gmail.com</a></div>
+      </div>
+      <div>
+        <div class="label">LinkedIn</div>
+        <div class="value"><a href="https://www.linkedin.com/in/davidafg/" target="_blank" rel="noopener">/in/davidafg</a></div>
+      </div>
+      <div>
+        <div class="label">Affiliation</div>
+        <div class="value">Paris 1 Panthéon-Sorbonne · IADB</div>
+      </div>
+    </div>
+
+    <a class="cv-button" href="CV_DAFG.pdf" target="_blank" rel="noopener">Download CV ↗</a>
+  </section>
+
+  <footer>
+    <span>© <span id="year"></span> · David Figueroa</span>
+    <span>Built with care, in Paris.</span>
+  </footer>
+
+  <!-- ============ TRANSIT NETWORK + PULSE ANIMATION ============ -->
+  <script>
+    (function () {
+      const svg = document.getElementById('network');
+      const W = 1600, H = 900;
+      const NS = 'http://www.w3.org/2000/svg';
+
+      // Seeded RNG so the network looks the same every load
+      let seed = 7;
+      const rand = () => { const x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
+
+      // ===== SVG element factories =====
+      function makePath(d, opts = {}) {
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', d);
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', opts.stroke || 'var(--river)');
+        p.setAttribute('stroke-width', opts.width || 1.5);
+        p.setAttribute('stroke-linecap', 'round');
+        p.setAttribute('stroke-linejoin', 'round');
+        if (opts.opacity != null) p.setAttribute('opacity', opts.opacity);
+        return p;
+      }
+      function makeCircle(x, y, r, opts = {}) {
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', r);
+        if (opts.fill) c.setAttribute('fill', opts.fill);
+        if (opts.stroke) c.setAttribute('stroke', opts.stroke);
+        if (opts.strokeWidth != null) c.setAttribute('stroke-width', opts.strokeWidth);
+        if (opts.opacity != null) c.setAttribute('opacity', opts.opacity);
+        return c;
+      }
+      function makeRect(cx, cy, size, opts = {}) {
+        const r = document.createElementNS(NS, 'rect');
+        r.setAttribute('x', cx - size / 2);
+        r.setAttribute('y', cy - size / 2);
+        r.setAttribute('width', size);
+        r.setAttribute('height', size);
+        r.setAttribute('fill', opts.fill || 'var(--river-deep)');
+        if (opts.opacity != null) r.setAttribute('opacity', opts.opacity);
+        return r;
+      }
+
+      // ===== Generate a polyline that crosses the canvas =====
+      function pointOnEdge(edge, t) {
+        const m = 60;
+        if (edge === 'top')    return { x: m + t * (W - 2 * m), y: -20 };
+        if (edge === 'bottom') return { x: m + t * (W - 2 * m), y: H + 20 };
+        if (edge === 'left')   return { x: -20, y: m + t * (H - 2 * m) };
+        return { x: W + 20, y: m + t * (H - 2 * m) }; // right
+      }
+      const allEdges = ['top', 'bottom', 'left', 'right'];
+
+      function generateLineWaypoints() {
+        // Pick two different edges, biased to produce diagonal-ish routes
+        const startEdge = allEdges[Math.floor(rand() * 4)];
+        let endEdge = allEdges[Math.floor(rand() * 4)];
+        while (endEdge === startEdge) endEdge = allEdges[Math.floor(rand() * 4)];
+
+        const start = pointOnEdge(startEdge, rand());
+        const end = pointOnEdge(endEdge, rand());
+
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const perpX = -dy / dist;
+        const perpY = dx / dist;
+
+        // 3–6 internal bends per line
+        const numBends = 3 + Math.floor(rand() * 4);
+        const points = [start];
+        for (let i = 0; i < numBends; i++) {
+          const t = (i + 1) / (numBends + 1);
+          const idealX = start.x + dx * t;
+          const idealY = start.y + dy * t;
+          // Perpendicular offset, tapered so bends are stronger in the middle
+          const taper = 1 - Math.abs(t - 0.5) * 1.6;
+          const offset = (rand() - 0.5) * 220 * Math.max(0.15, taper);
+          points.push({ x: idealX + perpX * offset, y: idealY + perpY * offset });
+        }
+        points.push(end);
+        return points;
+      }
+
+      // ===== Convert waypoints to an SVG path with rounded corners =====
+      function waypointsToPathD(points) {
+        if (points.length < 2) return '';
+        const cornerRadius = 22;
+        let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+        for (let i = 1; i < points.length - 1; i++) {
+          const prev = points[i - 1];
+          const cur = points[i];
+          const next = points[i + 1];
+
+          // Approach-side anchor
+          const ax = prev.x - cur.x, ay = prev.y - cur.y;
+          const aLen = Math.hypot(ax, ay) || 1;
+          const r1 = Math.min(cornerRadius, aLen / 2);
+          const inX = cur.x + (ax / aLen) * r1;
+          const inY = cur.y + (ay / aLen) * r1;
+
+          // Leave-side anchor
+          const bx = next.x - cur.x, by = next.y - cur.y;
+          const bLen = Math.hypot(bx, by) || 1;
+          const r2 = Math.min(cornerRadius, bLen / 2);
+          const outX = cur.x + (bx / bLen) * r2;
+          const outY = cur.y + (by / bLen) * r2;
+
+          d += ` L ${inX.toFixed(2)} ${inY.toFixed(2)}`;
+          d += ` Q ${cur.x.toFixed(2)} ${cur.y.toFixed(2)} ${outX.toFixed(2)} ${outY.toFixed(2)}`;
+        }
+
+        const last = points[points.length - 1];
+        d += ` L ${last.x.toFixed(2)} ${last.y.toFixed(2)}`;
+        return d;
+      }
+
+      // ===== Build the line layer =====
+      // Layers (in z-order): grid -> lines -> stations -> interchanges -> pulses
+      const gridGroup = document.createElementNS(NS, 'g');
+      const linesGroup = document.createElementNS(NS, 'g');
+      const stationsGroup = document.createElementNS(NS, 'g');
+      const interchangesGroup = document.createElementNS(NS, 'g');
+      const pulseGroup = document.createElementNS(NS, 'g');
+
+      svg.appendChild(gridGroup);
+      svg.appendChild(linesGroup);
+      svg.appendChild(stationsGroup);
+      svg.appendChild(interchangesGroup);
+      svg.appendChild(pulseGroup);
+
+      // Faint dot grid (remote-sensing flavor)
+      gridGroup.setAttribute('opacity', '0.14');
+      const gridStep = 80;
+      for (let gx = gridStep / 2; gx < W; gx += gridStep) {
+        for (let gy = gridStep / 2; gy < H; gy += gridStep) {
+          const dot = document.createElementNS(NS, 'circle');
+          dot.setAttribute('cx', gx);
+          dot.setAttribute('cy', gy);
+          dot.setAttribute('r', 0.7);
+          dot.setAttribute('fill', 'var(--ink-mute)');
+          gridGroup.appendChild(dot);
+        }
+      }
+
+      // Generate the lines (the "routes" of the transit network)
+      const NUM_LINES = 11;
+      const lines = []; // for pulse system: { el, weight, length }
+      for (let i = 0; i < NUM_LINES; i++) {
+        const points = generateLineWaypoints();
+        const d = waypointsToPathD(points);
+
+        // Three tiers: primary (darker, thicker), mid, faint
+        const tier = i < 3 ? 0 : (i < 7 ? 1 : 2);
+        const stroke = tier === 0 ? 'var(--river-deep)' : 'var(--river)';
+        const width = [1.9, 1.4, 1.1][tier] + rand() * 0.3;
+        const opacity = [0.45, 0.32, 0.22][tier];
+        const weight = [3, 2, 1][tier]; // pulse-frequency weighting
+
+        const path = makePath(d, { stroke, width, opacity });
+        linesGroup.appendChild(path);
+        lines.push({ el: path, weight });
+      }
+
+      // ===== Stations: small filled squares spaced along each line =====
+      lines.forEach((line) => {
+        const totalLength = line.el.getTotalLength();
+        const interval = 110 + rand() * 50;
+        // Skip the first/last small portion so stations aren't right at the edge
+        for (let dist = interval; dist < totalLength - interval; dist += interval) {
+          const pt = line.el.getPointAtLength(dist);
+          const station = makeRect(pt.x, pt.y, 3.5, {
+            fill: 'var(--river-deep)',
+            opacity: 0.55,
+          });
+          stationsGroup.appendChild(station);
+        }
+      });
+
+      // ===== Interchanges: detected via spatial hashing =====
+      // Sample each line densely, drop into 50×50 cells, count distinct lines per cell.
+      const cellSize = 55;
+      const cells = new Map();
+      lines.forEach((line, lineIdx) => {
+        const totalLength = line.el.getTotalLength();
+        const step = 16;
+        for (let dist = 0; dist <= totalLength; dist += step) {
+          const pt = line.el.getPointAtLength(dist);
+          const cx = Math.floor(pt.x / cellSize);
+          const cy = Math.floor(pt.y / cellSize);
+          const key = `${cx},${cy}`;
+          if (!cells.has(key)) cells.set(key, new Map());
+          const linesInCell = cells.get(key);
+          if (!linesInCell.has(lineIdx)) {
+            linesInCell.set(lineIdx, { sumX: pt.x, sumY: pt.y, n: 1 });
+          } else {
+            const e = linesInCell.get(lineIdx);
+            e.sumX += pt.x; e.sumY += pt.y; e.n++;
+          }
+        }
+      });
+
+      // Candidate interchanges = cells with ≥2 distinct lines
+      const candidates = [];
+      cells.forEach((linesInCell) => {
+        if (linesInCell.size >= 2) {
+          let sumX = 0, sumY = 0, n = 0;
+          linesInCell.forEach((e) => {
+            sumX += e.sumX / e.n;
+            sumY += e.sumY / e.n;
+            n++;
+          });
+          candidates.push({ x: sumX / n, y: sumY / n, count: linesInCell.size });
+        }
+      });
+
+      // Deduplicate interchanges that are too close to each other (keep the busiest)
+      candidates.sort((a, b) => b.count - a.count);
+      const interchanges = [];
+      candidates.forEach((c) => {
+        const tooClose = interchanges.some(
+          (i) => Math.hypot(i.x - c.x, i.y - c.y) < 50
+        );
+        // Also skip interchanges very near the left edge where the text sits
+        if (!tooClose && c.x > 80 && c.x < W - 30 && c.y > 30 && c.y < H - 30) {
+          interchanges.push(c);
+        }
+      });
+
+      // Draw the interchange rings (open circles — the visual "anchors")
+      interchanges.forEach((ic) => {
+        const radius = ic.count >= 3 ? 6.5 : 5;
+        const ring = makeCircle(ic.x, ic.y, radius, {
+          fill: 'var(--cream)',
+          stroke: 'var(--ink)',
+          strokeWidth: 1.4,
+          opacity: 0.85,
+        });
+        interchangesGroup.appendChild(ring);
+      });
+
+      // ===== Pulses (flowing dots along the lines) =====
+      // Pre-compute path lengths
+      lines.forEach((p) => {
+        try { p.length = p.el.getTotalLength(); } catch (e) { p.length = 0; }
+      });
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Glow filter from <defs> above
+      pulseGroup.setAttribute('filter', 'url(#pulse-glow)');
+
+      const totalWeight = lines.reduce((s, p) => s + (p.weight || 1), 0);
+      function pickPath() {
+        let r = rand() * totalWeight;
+        for (const p of lines) { r -= (p.weight || 1); if (r <= 0) return p; }
+        return lines[lines.length - 1];
+      }
+
+      const NUM_PULSES = 26;
+      const pulses = [];
+      for (let i = 0; i < NUM_PULSES; i++) {
+        const dot = document.createElementNS(NS, 'circle');
+        dot.setAttribute('r', 2.4);
+        dot.setAttribute('fill', 'var(--pulse)');
+        dot.setAttribute('opacity', '0');
+        pulseGroup.appendChild(dot);
+        pulses.push({
+          el: dot,
+          path: null,
+          duration: 0,
+          startTime: 0,
+          delay: rand() * 5000,
+        });
+      }
+
+      function assignPulse(pulse, now) {
+        const p = pickPath();
+        if (!p || p.length < 10) {
+          pulse.delay = 200 + rand() * 1000;
+          pulse.startTime = now + pulse.delay;
+          return;
+        }
+        pulse.path = p;
+        pulse.duration = 2200 + (p.length / 80) * 900 + rand() * 1500;
+        pulse.startTime = now;
+      }
+
+      if (!prefersReducedMotion) {
+        const start = performance.now();
+        function frame(now) {
+          for (const pulse of pulses) {
+            if (!pulse.path) {
+              if (now > start + pulse.delay) assignPulse(pulse, now);
+              continue;
+            }
+            const elapsed = now - pulse.startTime;
+            const t = elapsed / pulse.duration;
+            if (t >= 1) {
+              pulse.el.setAttribute('opacity', '0');
+              pulse.path = null;
+              pulse.delay = 150 + rand() * 1800;
+              pulse.startTime = now;
+              continue;
+            }
+            const dist = t * pulse.path.length;
+            let pt;
+            try { pt = pulse.path.el.getPointAtLength(dist); }
+            catch (e) { pulse.path = null; continue; }
+            pulse.el.setAttribute('cx', pt.x);
+            pulse.el.setAttribute('cy', pt.y);
+            let alpha;
+            if (t < 0.12) alpha = t / 0.12;
+            else if (t > 0.82) alpha = (1 - t) / 0.18;
+            else alpha = 1;
+            pulse.el.setAttribute('opacity', (alpha * 0.95).toFixed(2));
+          }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      // Year in footer
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
