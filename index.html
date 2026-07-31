@@ -501,13 +501,18 @@
       z-index: 9999;
       pointer-events: none;
       display: none;
-      background: transparent; /* Changed this from rgba(...) to transparent! */
+      background: transparent;
       overflow: hidden;
-      transition: transform 1.2s cubic-bezier(0.5, 0, 0.2, 1), opacity 1.2s ease;
+      transition: transform 1.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 1.5s ease;
+      
+      /* --- ADD THESE 4 LINES FOR GPU ACCELERATION --- */
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      perspective: 1000px;
     }
 
     #data-matrix.flush {
-      transform: translateY(100vh);
       opacity: 0;
     }
 
@@ -2451,7 +2456,7 @@
           
         }, 4500); // Continues to change every 3.5 seconds
         
-      }, 1000); // The 1-second initial delay
+      }, 750); // The 1-second initial delay
       
     } else if (cycler && prefersReducedMotion) {
       // Accessibility fallback: if user prefers no animation, make it instantly visible
@@ -2572,23 +2577,27 @@
       }, 40); 
 
       function flushAndScroll() {
+        // Wait 1 second for the final bars to cross the screen
         setTimeout(() => {
           
-          overlay.classList.add('flush');
-          
+          // 1. Instantly snap the page down to the work section (hidden behind the matrix)
           const workSection = document.getElementById('work');
           if (workSection) {
-             workSection.scrollIntoView({ behavior: 'smooth' });
+             workSection.scrollIntoView({ behavior: 'instant' });
           }
 
+          // 2. Trigger the CSS fade-out to reveal the new section
+          overlay.classList.add('flush');
+
+          // 3. Clean up the DOM after the 1.5-second fade is completely finished
           setTimeout(() => {
             overlay.style.display = 'none';
             overlay.innerHTML = '';
             overlay.classList.remove('flush');
             isAnimating = false;
-          }, 1200);
+          }, 1600); 
 
-        }, 1000);
+        }, 1000); 
       }
     }
 
