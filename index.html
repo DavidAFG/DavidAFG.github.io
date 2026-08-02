@@ -443,6 +443,28 @@
       transform: translateY(10px);
     }
 
+    /* --- Image Cycler Box --- */
+    .cycler-viz .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      pointer-events: none; /* Lets clicks pass through to the main link */
+    }
+    
+    .cycler-viz .slide.active {
+      opacity: 1;
+    }
+
+    .cycler-viz .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; 
+      display: block;
+    }
+
 
     /* --- The Glowing Text Trigger --- */
     .alive-text {
@@ -1050,9 +1072,9 @@
     <a href="#top" class="brand">DAFG</a>
     <ul>
       <li><a href="#about">About</a></li>
-      <li><a href="#writing">Writing</a></li>
-      <li><a href="#research">Research</a></li>
-      <li><a href="#professional">Professional</a></li>
+      <li><a href="#work" data-nav-tab="professional">Professional</a></li>
+      <li><a href="#work" data-nav-tab="publications">Publications</a></li>
+      <li><a href="#work" data-nav-tab="education">Education</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
@@ -1387,14 +1409,75 @@
         <div class="tab-meta-right">Degrees &amp; academics</div>
         <div class="item-list">
 
-          <div class="item">
+          <!-- Added align-items: start; here to fix the baseline overflow -->
+          <div class="item with-viz" style="align-items: start;">
             <div class="tag">2024 — 2026</div>
-            <div class="body">
-              <h3>MSc. in Development Economics</h3>
-              <div class="role-meta">Paris 1 Panthéon-Sorbonne · Paris, France</div>
-              <p><strong>Note:</strong> <i>Highest Honors</i></p>
-              <p>Focused on Development Economics, Applied Econometrics, Rural and Urban development, Remote Sensing, and Big data analysis.</p>
-              <p><strong>M2 Thesis:</strong> Elaborated a multimodal transportation network for land and rivers in the Amazon to measure spatial heterogeneous effects of an education public program in Brazil.</p>
+            
+            <!-- Added align-items: start; here so the row height matches the text -->
+            <div class="body voxmapp-body" style="grid-template-columns: 1fr 200px; align-items: start;">
+              
+              <!-- Left column: Text -->
+              <div class="vox-text">
+                <div class="vox-text-head">
+                  <h3>MSc. in Development Economics</h3>
+                  <div class="role-meta">Paris 1 Panthéon-Sorbonne · Paris, France</div>
+                </div>
+                <div>
+                  <p><strong>Note:</strong> <i>Highest Honors</i></p>
+                  <p>Focused on Development Economics, Applied Econometrics, Rural and Urban development, Remote Sensing, and Big data analysis.</p>
+                  <p><strong>M2 Thesis:</strong> Elaborated a multimodal transportation network for land and rivers in the Amazon to measure spatial heterogeneous effects of an education public program in Brazil.</p>
+                </div>
+              </div>
+              
+              <!-- Right column: The Cycling Image Box -->
+              <a class="sub-role-viz linked cycler-viz" style="grid-column: 2; grid-row: 1; position: relative;" href="thesis.pdf" target="_blank" rel="noopener" aria-label="Read MSc Thesis">
+                
+                <!-- Slide 1 -->
+                <div class="slide active">
+                  <img src="thesis_intro.png" alt="MSc Thesis Cover" />
+                  <span class="viz-overlay">
+                    <span class="viz-label">MSc Thesis Cover</span>
+                    <span class="viz-cta">Read PDF ↗</span>
+                  </span>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide">
+                  <img src="full_network_viz.png" alt="Road/River network of Brazil and the Amazon" />
+                  <span class="viz-overlay">
+                    <span class="viz-label">Road/River network of Brazil and the Amazon</span>
+                    <span class="viz-cta">Read PDF ↗</span>
+                  </span>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide">
+                  <img src="antaq_shadowed.png" alt="Recovered Amazon river networks" />
+                  <span class="viz-overlay">
+                    <span class="viz-label">Recovered Amazon river networks</span>
+                    <span class="viz-cta">Read PDF ↗</span>
+                  </span>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="slide">
+                  <img src="schools_by_isa.png" alt="Schools by transport distance" />
+                  <span class="viz-overlay">
+                    <span class="viz-label">Schools by transport distance</span>
+                    <span class="viz-cta">Read PDF ↗</span>
+                  </span>
+                </div>
+
+                <!-- Slide 5 -->
+                <div class="slide">
+                  <img src="ISA_tier_expost.png" alt="PME event study" />
+                  <span class="viz-overlay">
+                    <span class="viz-label">PME event study</span>
+                    <span class="viz-cta">Read PDF ↗</span>
+                  </span>
+                </div>
+
+              </a>
             </div>
           </div>
 
@@ -1403,7 +1486,8 @@
             <div class="body">
               <h3>Bachelor of Economics</h3>
               <div class="role-meta">Tecnológico de Monterrey · Monterrey, Mexico</div>
-              <p>Final grade: 95.1. Specialized in Data Science for the public good where I modeled a calculator of the cost of care in Mexico using Python, R, and Netlogo.</p>
+              <p><strong>Final grade:</strong> 95.1.</p>
+              <p>Specialized in Data Science for the public good where I modeled a calculator of the cost of care in Mexico using Python, R, and Netlogo.</p>
             </div>
           </div>
 
@@ -1488,7 +1572,7 @@
       </div>
       <div>
         <div class="label">Affiliation</div>
-        <div class="value">Paris 1 Panthéon-Sorbonne · IADB</div>
+        <div class="value">IADB <br> Paris 1 Panthéon-Sorbonne</div>
       </div>
     </div>
 
@@ -1891,6 +1975,14 @@
           const target = tab.getAttribute('data-tab');
           tabs.forEach((t) => t.classList.toggle('active', t === tab));
           panels.forEach((p) => p.classList.toggle('active', p.getAttribute('data-panel') === target));
+        });
+      });
+      // --- NEW: Make Navbar links automatically switch tabs ---
+      document.querySelectorAll('nav.top a[data-nav-tab]').forEach(link => {
+        link.addEventListener('click', () => {
+          const target = link.getAttribute('data-nav-tab');
+          const targetTab = document.querySelector(`.tab[data-tab="${target}"]`);
+          if (targetTab) targetTab.click();
         });
       });
     })();
@@ -2651,6 +2743,31 @@
   })();
 </script>
 
+// spinning images
+
+<!-- Education Image Cycler -->
+  <script>
+    (function() {
+      const cycler = document.querySelector('.cycler-viz');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (!cycler || prefersReducedMotion) return;
+      
+      const slides = cycler.querySelectorAll('.slide');
+      let currentIndex = 0;
+      
+      setInterval(() => {
+        // Fade out current slide
+        slides[currentIndex].classList.remove('active');
+        
+        // Move to the next slide (and loop back to 0 at the end)
+        currentIndex = (currentIndex + 1) % slides.length;
+        
+        // Fade in new slide
+        slides[currentIndex].classList.add('active');
+      }, 3500); // Changes every 3.5 seconds
+    })();
+  </script>
 
 
 </body>
