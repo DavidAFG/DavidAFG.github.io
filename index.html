@@ -844,6 +844,23 @@
     .voxmapp-dash .dash-donut svg   { width: 32px; height: 32px; }
     .voxmapp-dash .dash-donut-label { font-size: 0.62rem; }
 
+    /* CIEP specific visual box */
+    .sub-role-viz img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Changed from cover to contain */
+      display: block;
+      padding: 12px; /* Adds a nice little visual frame around it */
+      box-sizing: border-box;
+    }
+    .ciep-viz img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the image fills the box without stretching */
+      display: block;
+    }
+
+
     /* Map card spans both columns */
     .dash-card-map {
       grid-column: 1 / span 2;
@@ -1099,10 +1116,12 @@
       <div class="about-text">
         <h2>A researcher working at the seam of spatial data and development economics.</h2>
         <p class="lead">
-          With an MSc. in Development Economics, I've done most of my work as a consultant with the Inter-American Development Bank. I've built remote sensing based sub-municipal databases for the Amazon, and I am now working on the spatial (re)organization of international trade to <span id="alive-trigger" class="alive-text" role="button" tabindex="0">make data alive.</span>
+          With an MSc. in Development Economics, I've done most of my work as a consultant with the Inter-American Development Bank. I've built remote 
+          sensing based sub-municipal databases for the Amazon, and I am now working on the spatial (re)organization of international trade.
+          My focus in projects is for the data to speak for itself, often striving to <span id="alive-trigger" class="alive-text" role="button" tabindex="0">make data alive.</span>
         </p>
         <p>
-          Before Paris, I studied economics at Tec de Monterrey, where I specialised in data science for the public good and co-authored work on inequality, taxation, and the economic value of care. My current research combines remote sensing, machine learning, and applied econometrics to recover geographic detail in places where official data is thin.
+          Before La Sorbonne in Paris, I studied economics at Tec de Monterrey, where I specialised in data science for the public good and co-authored work on inequality, taxation, and the economic value of care. My current research combines remote sensing, machine learning, and applied econometrics to recover geographic detail in places where official data is thin.
         </p>
         <p>
           I work in Spanish, English, French, and slowly including German.
@@ -1168,7 +1187,7 @@
           </div>
 
           <div class="item">
-            <div class="tag">Defended</div>
+            <div class="tag">July 2026 <br> (Defended)</div>
             <div class="body">
               <h3>Going against the current: the spatially heterogeneous results of the Programa Mais Educacao</h3>
               <span class="status">MSc thesis · 2026</span>
@@ -1186,7 +1205,7 @@
             <div class="tag">2024 — 2026</div>
             <div class="body">
               <h3>Consultant</h3>
-              <div class="role-meta">Inter-American Development Bank · Paris (remote)</div>
+              <div class="role-meta">Inter-American Development Bank · Paris, France (remote)</div>
               <div class="sub-roles">
                 <div class="sub-role with-viz">
                   <div class="sub-role-header">
@@ -1228,7 +1247,7 @@
               <div class="vox-text">
                 <div class="vox-text-head">
                   <h3>Data Manager &amp; Developer</h3>
-                  <div class="role-meta">Voxmapp · Paris</div>
+                  <div class="role-meta">Voxmapp · Paris, France (Remote)</div>
                 </div>
                 <p>Designed and queried PostgreSQL / PL/pgSQL databases for development-programme partners across governments and NGOs. Built dashboards in Apache Superset and ran Python scrapers and NLP pipelines on open-access data.</p>
               </div>
@@ -1332,12 +1351,32 @@
             </div>
           </div>
 
-          <div class="item">
+          <div class="item with-viz">
             <div class="tag">2021 — 2022</div>
-            <div class="body">
-              <h3>Co-Investigator &amp; Co-Author</h3>
-              <div class="role-meta">Centro de Investigación Económica y Presupuestaria (CIEP) · Mexico</div>
-              <p>Co-wrote <em>La desigualdad y los impuestos</em>, an article on the distributional effects of taxation on inequality in Mexico.</p>
+            <div class="body voxmapp-body">
+              
+              <!-- Text goes in the left column -->
+              <div class="vox-text">
+                <div class="vox-text-head">
+                  <h3>Co-Investigator &amp; Co-Author</h3>
+                  <div class="role-meta">Centro de Investigación Económica y Presupuestaria (CIEP) · Monterrey, Mexico</div>
+                </div>
+                <div>
+                  <p>Worked with the transfering of data and publications into engaging digital formats.</p>
+                  <br>
+                  <p>Co-wrote <em>La desigualdad y los impuestos</em>, an article on the distributional effects of taxation on inequality in Mexico.</p>
+                </div>
+              </div>
+              
+              <!-- Image is forced into the 260px right column -->
+              <a class="sub-role-viz linked" style="grid-column: 2; grid-row: 1;" href="https://ciep.mx/1o4N" target="_blank" rel="noopener" aria-label="Read La desigualdad y los impuestos">
+                <img src="ciep.png" alt="CIEP Article Banner" />
+                <span class="viz-overlay">
+                  <span class="viz-label">Article Publication</span>
+                  <span class="viz-cta">Read on ciep.mx ↗</span>
+                </span>
+              </a>
+
             </div>
           </div>
 
@@ -2424,7 +2463,8 @@
   (function () {
     const phrases = [
       "the Brazilian Amazon.",
-      "international trade reorganization.",
+      "International trade (re)structuring.",
+      "ML and forestry inventories.",
       "AI supply chains."
     ];
     
